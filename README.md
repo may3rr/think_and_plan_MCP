@@ -1,47 +1,55 @@
-# Task Planner MCP Server
+<div style="text-align: center;">
+    <img src="img/asset.jpg" alt="展示图片">
+    <p>Help Claude think systematically and plan before tackling tasks, improving efficiency and quality!</p>
+    <p>
+        <a href="README_zh.md">中文</a> | <a href="README.md">English</a>
+    </p>
+</div>
+
+# 📝 Task Planner MCP Server
 
 An MCP (Model Context Protocol) server implementation that provides task planning and tracking tools for Claude and other MCP-compatible AI assistants.
 
-## Overview
+## 📋 Overview
 
 This Task Planner MCP server enables AI assistants to:
 
-1. Create structured task plans
-2. Add and track steps for completing tasks
-3. Mark steps as complete as they are finished
-4. Document and resolve issues that arise during task execution
-5. Review the current state of plans
+1. Create structured task plans ✨
+2. Add and track steps for completing tasks 📊
+3. Mark steps as complete as they are finished ✅
+4. Document and resolve issues that arise during task execution 🛠️
+5. Review the current state of plans 👀
 
 All planning information is stored in a local `plan.md` file that can be reviewed and edited by humans.
 
-## Features
+## ✨ Features
 
-- **Structured Planning**: Create organized task plans with steps and planning notes
-- **Progress Tracking**: Mark steps as complete as you execute them
-- **Issue Management**: Document problems and their resolutions
-- **Review Capability**: Review the entire plan or specific tasks at any time
-- **File-Based Storage**: All information stored in a human-readable Markdown file
+- **Structured Planning**: Create organized task plans with steps and planning notes 📑
+- **Progress Tracking**: Mark steps as complete as you execute them ⏱️
+- **Issue Management**: Document problems and their resolutions 🔍
+- **Review Capability**: Review the entire plan or specific tasks at any time 👁️
+- **File-Based Storage**: All information stored in a human-readable Markdown file 📁
 
-## Tools Provided
+## 🛠️ Tools Provided
 
 This MCP server exposes the following tools:
 
 | Tool | Description |
 |------|-------------|
-| `think_and_plan` | Create a new structured plan for a task |
-| `add_step` | Add a new step to an existing task plan |
-| `mark_step_complete` | Mark a step as completed |
-| `review_plan` | View the current plan contents |
-| `add_issue` | Document an issue with a specific step |
-| `resolve_issue` | Mark an issue as resolved with explanation |
-| `update_planning_notes` | Update the planning notes for a task |
-| `check_task_completion` | Check the completion status of a task |
+| `think_and_plan` | Create a new structured plan for a task 🧠 |
+| `add_step` | Add a new step to an existing task plan ➕ |
+| `mark_step_complete` | Mark a step as completed ✓ |
+| `review_plan` | View the current plan contents 📖 |
+| `add_issue` | Document an issue with a specific step ⚠️ |
+| `resolve_issue` | Mark an issue as resolved with explanation 🎯 |
+| `update_planning_notes` | Update the planning notes for a task 📝 |
+| `check_task_completion` | Check the completion status of a task 🔄 |
 
-## Installation
+## 📥 Installation
 
 ### Prerequisites
 
-- Python 3.10+
+- Python 3.10+ 🐍
 - MCP SDK (`pip install mcp`)
 
 ### Setup
@@ -81,7 +89,7 @@ To use with Claude Desktop:
 
 Replace `/path/to/python` with your Python interpreter path and update the path to the planner_server.py file.
 
-## Usage
+## 🚀 Usage
 
 Once the server is running and connected to an MCP client (like Claude Desktop), you can use the tools in your conversations:
 
@@ -126,7 +134,7 @@ Once the server is running and connected to an MCP client (like Claude Desktop),
    review_plan()
    ```
 
-## Structure of plan.md
+## 📄 Structure of plan.md
 
 The planner creates a `plan.md` file with a structure like this:
 
@@ -153,18 +161,18 @@ This is a preliminary analysis of the task.
 [ ] Deploy to hosting service
 ```
 
-## Troubleshooting
+## ❓ Troubleshooting
 
 - **Permission errors**: Ensure the directory where `plan.md` is created has write permissions.
 - **Integration issues**: Check Claude Desktop logs for connection errors.
 - **MCP errors**: Ensure the MCP SDK is properly installed.
 
-## TODOLIST
+## 📋 TODOLIST
 
-## License
+## 📜 License
 
 MIT
 
-## Contributing
+## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
