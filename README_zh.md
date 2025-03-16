@@ -87,7 +87,7 @@
 }
 ```
 
-将 `/path/to/python` 替换为你的 Python 解释器路径，并更新 planner_server.py 文件的路径。
+将 `/path/to/python` 替换为你的 Python 解释器路径，并更新 planner_server.py 文件的路径
 
 ## 🚀 使用方法
 
