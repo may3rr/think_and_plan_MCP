@@ -6,14 +6,8 @@ from datetime import datetime
 
 # Create an MCP server
 mcp = FastMCP("TaskPlanner")
-
-# 将这行
-PLAN_FILE = "plan.md"
-
-# 修改为
-PLAN_FILE = "/Users/jackielyu/Downloads/think_and_plan_MCP/plan.md"
-# 或者
-# PLAN_FILE = "/tmp/plan.md"
+# 修改为获取工作路径作为当前文件夹
+PLAN_FILE = os.path.join(os.getcwd(), "plan.md")
 def ensure_plan_file_exists():
     """Create the plan file if it doesn't exist."""
     if not os.path.exists(PLAN_FILE):
