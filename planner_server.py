@@ -1,3 +1,4 @@
+ #!/opt/anaconda3/envs/spyder/bin/python
 from mcp.server.fastmcp import FastMCP, Context
 import os
 import re
@@ -6,9 +7,13 @@ from datetime import datetime
 # Create an MCP server
 mcp = FastMCP("TaskPlanner")
 
-# Path to the plan file
+# 将这行
 PLAN_FILE = "plan.md"
 
+# 修改为
+PLAN_FILE = "/Users/jackielyu/Downloads/think_and_plan_MCP/plan.md"
+# 或者
+# PLAN_FILE = "/tmp/plan.md"
 def ensure_plan_file_exists():
     """Create the plan file if it doesn't exist."""
     if not os.path.exists(PLAN_FILE):
