@@ -159,6 +159,8 @@ This is a preliminary analysis of the task.
 - **Integration issues**: Check Claude Desktop logs for connection errors.
 - **MCP errors**: Ensure the MCP SDK is properly installed.
 
+## TODOLIST
+
 ## License
 
 MIT
