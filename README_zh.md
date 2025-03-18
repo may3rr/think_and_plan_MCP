@@ -94,45 +94,9 @@
 一旦服务器运行并连接到 MCP 客户端（如 Claude Desktop），你可以在对话中使用这些工具：
 
 ### 示例工作流程
-
-1. 从创建计划开始：
-   ```
-   think_and_plan("构建个人网站")
-   ```
-
-2. 添加具体步骤：
-   ```
-   add_step("设置开发环境")
-   add_step("创建 HTML 结构")
-   add_step("使用 CSS 设计样式")
-   add_step("添加 JavaScript 交互")
-   add_step("部署到托管服务")
-   ```
-
-3. 在工作时将步骤标记为完成：
-   ```
-   mark_step_complete("设置开发环境")
-   ```
-
-4. 记录任何问题：
-   ```
-   add_issue("CSS 样式未应用于导航菜单", "使用 CSS 设计样式")
-   ```
-
-5. 解决问题：
-   ```
-   resolve_issue("使用 CSS 设计样式", "通过纠正 CSS 选择器特异性解决")
-   ```
-
-6. 检查进度：
-   ```
-   check_task_completion("构建个人网站")
-   ```
-
-7. 随时查看计划：
-   ```
-   review_plan()
-   ```
+```
+Think and plan, 制作一个个人网站
+```
 
 ## 📄 plan.md 的结构
 

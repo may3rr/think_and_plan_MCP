@@ -94,45 +94,9 @@ Replace `/path/to/python` with your Python interpreter path and update the path 
 Once the server is running and connected to an MCP client (like Claude Desktop), you can use the tools in your conversations:
 
 ### Example Workflow
-
-1. Start with creating a plan:
-   ```
-   think_and_plan("Build a personal website")
-   ```
-
-2. Add specific steps:
-   ```
-   add_step("Set up development environment")
-   add_step("Create HTML structure")
-   add_step("Style with CSS")
-   add_step("Add JavaScript interactions")
-   add_step("Deploy to hosting service")
-   ```
-
-3. Mark steps as complete as you work:
-   ```
-   mark_step_complete("Set up development environment")
-   ```
-
-4. Document any issues:
-   ```
-   add_issue("CSS styles not applying to navigation menu", "Style with CSS")
-   ```
-
-5. Resolve issues:
-   ```
-   resolve_issue("Style with CSS", "Fixed by correcting CSS selector specificity")
-   ```
-
-6. Check progress:
-   ```
-   check_task_completion("Build a personal website")
-   ```
-
-7. Review the plan at any time:
-   ```
-   review_plan()
-   ```
+```
+Think and plan, create a personal website
+```
 
 ## 📄 Structure of plan.md
 
