@@ -44,6 +44,9 @@ This MCP server exposes the following tools:
 | `resolve_issue` | Mark an issue as resolved with explanation 🎯 |
 | `update_planning_notes` | Update the planning notes for a task 📝 |
 | `check_task_completion` | Check the completion status of a task 🔄 |
+| `delete_step` | Delete a step from the plan 🗑️ |
+| `delete_task` | Delete a task from the plan 🗑️ |
+| `set_priority` |Set task priority High🔴Medium🟠Low🟢|
 
 ## 📥 Installation
 
@@ -70,8 +73,8 @@ This MCP server exposes the following tools:
    python planner_server.py
    ```
 
-### Claude Desktop Integration
-
+### Integration
+#### Option1: Use with Claude Desktop
 To use with Claude Desktop:
 
 1. Open Claude Desktop settings
@@ -88,6 +91,22 @@ To use with Claude Desktop:
 ```
 
 Replace `/path/to/python` with your Python interpreter path and update the path to the planner_server.py file.
+#### Option2: Use with Cursor
+To use with Cursor:
+
+1. Open **Settings** -> **Cursor settings** -> **Features**.
+2. Edit the **MCP Servers** section and add a new MCP server.
+3. Set the following:
+   - **Name**: `TaskPlanner`
+   - **Type**: `Command`
+4. Set the **Command** to:
+   ```
+   /path/to/python /path/to/think_and_plan_MCP/planner_server.py
+   ```
+
+   Replace `/path/to/python` with the path to your Python interpreter and update the path to the `planner_server.py` file.
+
+⚠️ **Note**: Ensure there is a space between the two paths.
 
 ## 🚀 Usage
 

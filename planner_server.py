@@ -3,16 +3,28 @@ from mcp.server.fastmcp import FastMCP, Context
 import os
 import re
 from datetime import datetime
-
+import sys
 # Create an MCP server
 mcp = FastMCP("TaskPlanner")
-# 修改为获取工作路径作为当前文件夹
-PLAN_FILE = os.path.join(os.getcwd(), "plan.md")
+user_home = os.path.expanduser("~")  # 获取用户主目录
+PLAN_FILE = os.path.join(user_home, "Downloads", "plan.md")  # 或者选择其他你有权限的目录
+
 def ensure_plan_file_exists():
     """Create the plan file if it doesn't exist."""
+    # 确保父目录存在
+    plan_dir = os.path.dirname(PLAN_FILE)
+    if not os.path.exists(plan_dir):
+        try:
+            os.makedirs(plan_dir, exist_ok=True)
+        except Exception as e:
+            print(f"Error creating directory: {e}", file=sys.stderr)
+            
     if not os.path.exists(PLAN_FILE):
-        with open(PLAN_FILE, "w", encoding="utf-8") as f:
-            f.write("# Task Plan\n\nCreated on: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n\n## Steps\n\n")
+        try:
+            with open(PLAN_FILE, "w", encoding="utf-8") as f:
+                f.write("# Task Plan\n\nCreated on: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n\n## Steps\n\n")
+        except Exception as e:
+            print(f"Error creating plan file: {e}", file=sys.stderr)
 
 @mcp.tool()
 def think_and_plan(task_description: str, ctx: Context = None) -> str:
@@ -458,6 +470,192 @@ def check_task_completion(task_title: str = None, ctx: Context = None) -> str:
         ctx.info(f"Checked completion status for task: {task_title}")
     
     return result
+
+@mcp.tool()
+def delete_step(step_text: str, task_title: str = None, ctx: Context = None) -> str:
+    """
+    Delete a step from the plan.
+    
+    Args:
+        step_text: Text of the step to delete
+        task_title: The task title containing the step (uses the latest task if not specified)
+    
+    Returns:
+        A message indicating the step was deleted
+    """
+    ensure_plan_file_exists()
+    
+    with open(PLAN_FILE, "r", encoding="utf-8") as f:
+        content = f.read()
+    
+    # If no specific task, find the most recent task section
+    if not task_title:
+        task_sections = re.findall(r'## (.+?)\n', content)
+        if not task_sections:
+            return "No tasks found in the plan."
+        task_title = task_sections[-1]
+    
+    # Find the task section
+    task_pattern = re.compile(rf'## {re.escape(task_title)}\n(.+?)(?=\n## |$)', re.DOTALL)
+    task_match = task_pattern.search(content)
+    
+    if not task_match:
+        return f"Task '{task_title}' not found in the plan."
+    
+    # Find and delete the step
+    task_content = task_match.group(0)
+    step_pattern = re.compile(rf'(\[\S?\] {re.escape(step_text)}.*?)(?=\n\[\S?\] |\n### |\n## |$)', re.DOTALL)
+    step_match = step_pattern.search(task_content)
+    
+    if not step_match:
+        return f"Step '{step_text}' not found in task '{task_title}'."
+    
+    step_content = step_match.group(0)
+    updated_task = task_content.replace(step_content + "\n", "")
+    if updated_task == task_content:  # If the step was at the end without a trailing newline
+        updated_task = task_content.replace(step_content, "")
+    
+    updated_content = content.replace(task_content, updated_task)
+    
+    # Write back to file
+    with open(PLAN_FILE, "w", encoding="utf-8") as f:
+        f.write(updated_content)
+    
+    if ctx:
+        ctx.info(f"Deleted step: {step_text} from task: {task_title}")
+    
+    return f"Deleted step '{step_text}' from task '{task_title}'."
+
+@mcp.tool()
+def delete_task(task_title: str, ctx: Context = None) -> str:
+    """
+    Delete an entire task from the plan.
+    
+    Args:
+        task_title: The title of the task to delete
+    
+    Returns:
+        A message indicating the task was deleted
+    """
+    ensure_plan_file_exists()
+    
+    with open(PLAN_FILE, "r", encoding="utf-8") as f:
+        content = f.read()
+    
+    # Find the task section
+    task_pattern = re.compile(rf'## {re.escape(task_title)}\n(.+?)(?=\n## |$)', re.DOTALL)
+    task_match = task_pattern.search(content)
+    
+    if not task_match:
+        return f"Task '{task_title}' not found in the plan."
+    
+    # Delete the task
+    task_content = task_match.group(0)
+    updated_content = content.replace(task_content, "").strip()
+    
+    # Clean up any double newlines that might be created
+    updated_content = re.sub(r'\n{3,}', '\n\n', updated_content)
+    
+    # Write back to file
+    with open(PLAN_FILE, "w", encoding="utf-8") as f:
+        f.write(updated_content)
+    
+    if ctx:
+        ctx.info(f"Deleted task: {task_title}")
+    
+    return f"Deleted task '{task_title}' from the plan."
+
+@mcp.tool()
+def set_priority(priority: str, step_text: str = None, task_title: str = None, ctx: Context = None) -> str:
+    """
+    Set priority for a task or step.
+    
+    Args:
+        priority: Priority level (high, medium, low)
+        step_text: Text of the step to prioritize (if None, sets priority for the task)
+        task_title: The task title (uses the latest task if not specified)
+    
+    Returns:
+        A message indicating the priority was set
+    """
+    ensure_plan_file_exists()
+    
+    # Validate priority
+    valid_priorities = ["high", "medium", "low"]
+    priority = priority.lower()
+    if priority not in valid_priorities:
+        return f"Invalid priority '{priority}'. Please use one of: {', '.join(valid_priorities)}"
+    
+    # Priority emoji mapping
+    priority_emoji = {
+        "high": "🔴",
+        "medium": "🟠",
+        "low": "🟢"
+    }
+    
+    with open(PLAN_FILE, "r", encoding="utf-8") as f:
+        content = f.read()
+    
+    # If no specific task, find the most recent task section
+    if not task_title:
+        task_sections = re.findall(r'## (.+?)\n', content)
+        if not task_sections:
+            return "No tasks found in the plan."
+        task_title = task_sections[-1]
+    
+    # Find the task section
+    task_pattern = re.compile(rf'## {re.escape(task_title)}\n(.+?)(?=\n## |$)', re.DOTALL)
+    task_match = task_pattern.search(content)
+    
+    if not task_match:
+        return f"Task '{task_title}' not found in the plan."
+    
+    task_content = task_match.group(0)
+    updated_content = content
+    
+    if step_text:
+        # Set priority for a specific step
+        step_pattern = re.compile(rf'(\[\S?\] {re.escape(step_text)})(.*?)(?=\n\[\S?\] |\n### |\n## |$)', re.DOTALL)
+        step_match = step_pattern.search(task_content)
+        
+        if not step_match:
+            return f"Step '{step_text}' not found in task '{task_title}'."
+        
+        step_line = step_match.group(1)
+        
+        # Remove existing priority markers
+        clean_step = re.sub(r' [🔴🟠🟢] ', ' ', step_line)
+        
+        # Add new priority marker
+        prioritized_step = clean_step.replace("] ", f"] {priority_emoji[priority]} ")
+        updated_task = task_content.replace(step_line, prioritized_step)
+        updated_content = content.replace(task_content, updated_task)
+        
+        message = f"Set priority '{priority}' for step '{step_text}' in task '{task_title}'."
+    else:
+        # Set priority for the entire task
+        task_heading = re.compile(rf'## {re.escape(task_title)}(\s*\[🔴🟠🟢\])?\n')
+        task_heading_match = task_heading.search(task_content)
+        
+        if task_heading_match:
+            original_heading = task_heading_match.group(0)
+            # Remove existing priority marker if present
+            clean_heading = re.sub(r' \[🔴🟠🟢\]', '', original_heading)
+            # Add new priority marker
+            prioritized_heading = clean_heading.replace("\n", f" [{priority_emoji[priority]}]\n")
+            updated_task = task_content.replace(original_heading, prioritized_heading)
+            updated_content = content.replace(task_content, updated_task)
+        
+        message = f"Set priority '{priority}' for task '{task_title}'."
+    
+    # Write back to file
+    with open(PLAN_FILE, "w", encoding="utf-8") as f:
+        f.write(updated_content)
+    
+    if ctx:
+        ctx.info(message)
+    
+    return message
 
 # Run the server
 if __name__ == "__main__":
