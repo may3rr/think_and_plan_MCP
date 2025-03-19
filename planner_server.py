@@ -3,16 +3,28 @@ from mcp.server.fastmcp import FastMCP, Context
 import os
 import re
 from datetime import datetime
-
+import sys
 # Create an MCP server
 mcp = FastMCP("TaskPlanner")
-# 修改为获取工作路径作为当前文件夹
-PLAN_FILE = os.path.join(os.getcwd(), "plan.md")
+user_home = os.path.expanduser("~")  # 获取用户主目录
+PLAN_FILE = os.path.join(user_home, "Downloads", "plan.md")  # 或者选择其他你有权限的目录
+
 def ensure_plan_file_exists():
     """Create the plan file if it doesn't exist."""
+    # 确保父目录存在
+    plan_dir = os.path.dirname(PLAN_FILE)
+    if not os.path.exists(plan_dir):
+        try:
+            os.makedirs(plan_dir, exist_ok=True)
+        except Exception as e:
+            print(f"Error creating directory: {e}", file=sys.stderr)
+            
     if not os.path.exists(PLAN_FILE):
-        with open(PLAN_FILE, "w", encoding="utf-8") as f:
-            f.write("# Task Plan\n\nCreated on: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n\n## Steps\n\n")
+        try:
+            with open(PLAN_FILE, "w", encoding="utf-8") as f:
+                f.write("# Task Plan\n\nCreated on: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n\n## Steps\n\n")
+        except Exception as e:
+            print(f"Error creating plan file: {e}", file=sys.stderr)
 
 @mcp.tool()
 def think_and_plan(task_description: str, ctx: Context = None) -> str:
